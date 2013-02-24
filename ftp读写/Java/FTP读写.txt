@@ -1,0 +1,54 @@
+1、依赖jar包：
+commons-net.jar
+
+2、示例代码：
+	/**
+	 * FTP下载
+	 * @param url ftp的host
+	 * @param port ftp的端口
+	 * @param username 用户名
+	 * @param password 密码
+	 * @param remotePath 服务器端地址
+	 * @param fileName 过滤的文件名称，进行前缀匹配，为空表示下载全部
+	 * @param localPath 转存的本地路径
+	 * @return
+	 * @author yangjianfei
+	 * @date 2013-1-14
+	 */
+	public static boolean downFile(String url, int port, String username, String password,
+	        String remotePath, String fileName, String localPath) {
+		boolean success = false;
+		FTPClient ftp = new FTPClient();
+		try {
+			int reply;
+			ftp.connect(url, port);
+			ftp.login(username, password);
+			reply = ftp.getReplyCode();
+			if (!FTPReply.isPositiveCompletion(reply)) {
+				ftp.disconnect();
+				return success;
+			}
+			ftp.changeWorkingDirectory(remotePath);// 转移到FTP服务器目录
+			FTPFile[] fs = ftp.listFiles();
+			for (FTPFile ff : fs) {
+				if (StringUtils.isEmpty(fileName) || ff.getName().startsWith(fileName)) {
+					File localFile = new File(localPath + "/" + ff.getName());
+					OutputStream is = new FileOutputStream(localFile);
+					ftp.retrieveFile(ff.getName(), is);
+					is.close();
+				}
+			}
+			ftp.logout();
+			success = true;
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (ftp.isConnected()) {
+				try {
+					ftp.disconnect();
+				} catch (IOException ioe) {
+				}
+			}
+		}
+		return success;
+	}

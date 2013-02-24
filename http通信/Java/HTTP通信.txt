@@ -1,0 +1,40 @@
+2013-01-28
+1、依赖jar包：HttpClient。开源网址：hc.apache.org
+2、Get方式通信：
+	HttpClient client = new DefaultHttpClient();
+	HttpGet httpget = new HttpGet(url);
+	HttpResponse response = client.execute(httpget);
+	StringBuilder sb = new StringBuilder();
+	BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity()
+	        .getContent(), "UTF-8"));
+	String line;
+	while ((line = br.readLine()) != null) {
+		sb.append(line);
+	}
+	return sb.toString();
+	
+3、Post方式通信：
+	public static String getResponseAsStringByPostMethod(String url, Map<String, String> para)
+	        throws IOException {
+		HttpClient client = new DefaultHttpClient();
+		HttpPost httppost = new HttpPost(url);
+		List<NameValuePair> formparams = new ArrayList<NameValuePair>();
+		for (String key : para.keySet()) {
+			formparams.add(new BasicNameValuePair(key, para.get(key)));
+		}
+		UrlEncodedFormEntity entity = new UrlEncodedFormEntity(formparams, "UTF-8");
+		httppost.setEntity(entity);
+		HttpResponse response = client.execute(httppost);
+		StringBuilder sb = new StringBuilder();
+		BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity()
+		        .getContent(), "UTF-8"));
+		String line;
+		while ((line = br.readLine()) != null) {
+			sb.append(line);
+		}
+		return sb.toString();
+	}
+
+4、post方式需要注意：
+   设置的通信参数，如cookie，ua，超时时间等是通过httppost.getParam.setParameter来设置的。
+   提交的参数是通过httppost.setEntity(entity)来设置的，注意不要混淆。

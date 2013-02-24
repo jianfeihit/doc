@@ -1,0 +1,13 @@
+1、查看crontab的执行日志
+   /var/log/crontab
+   
+2013-01-16
+1、Ubuntu的目录说明
+   A、boot：系统默认分区
+   B、home：系统家目录
+2、如何设定用户的默认根目录？
+   修改/etc/passwd文件
+3、etc/passwd文件说明：
+   用户名:加密格式的口令:数字的user_id:数字的group_id:全名或帐户的其他说明:家目录:登录shell(登录时运行的程序)
+4、查看groupId:
+	
